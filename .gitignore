@@ -1,0 +1,31 @@
+## JetBrains Rider & IDEs
+.idea/
+*.sln.iml
+.vs/
+.vscode/
+
+## Build e diretórios de saída (.NET / ASP.NET Core)
+[Bb]in/
+[Oo]bj/
+bin/
+obj/
+out/
+
+## Arquivos de usuário e configurações locais
+*.user
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+## Pacotes NuGet locais
+*.nupkg
+**/packages/*
+!**/packages/build/
+
+## Resultados de testes e logs
+[Tt]est[Rr]esults/
+*.log
+
+## Arquivos do Sistema Operacional
+.DS_Store
+Thumbs.db
