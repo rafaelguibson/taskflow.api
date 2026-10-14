@@ -20,15 +20,12 @@ public class TaskController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
-        foreach (var taskItem in Tasks)
-        {
-            if (taskItem.Id == id)
-            {
-                return Ok(taskItem);
-            }
-        }
+        var task = Tasks.FirstOrDefault(t => t.Id == id);
 
-        return NotFound();
+        if (task == null)
+            return NotFound();
+
+        return Ok(task);
     }
 
     [HttpPost]
@@ -64,15 +61,7 @@ public class TaskController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult Delete(int id)
     {
-        TaskItem? taskToDelete = null;
-
-        foreach (var taskItem in Tasks)
-        {
-            if (taskItem.Id == id)
-            {
-                taskToDelete = taskItem;
-            }
-        }
+        TaskItem? taskToDelete = Tasks.FirstOrDefault(t => t.Id == id);
 
         if (taskToDelete == null)
             return NotFound();
