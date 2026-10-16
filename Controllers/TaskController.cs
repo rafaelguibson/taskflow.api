@@ -69,4 +69,16 @@ public class TaskController : ControllerBase
         Tasks.Remove(taskToDelete);
         return Ok(taskToDelete);
     }
+
+    [HttpGet("Completed")]
+    public IActionResult GetCompleted()
+    {
+        var completedTasks = Tasks.Where(t => t.Completed);
+
+        if (!completedTasks.Any())
+            return NoContent();
+
+        return Ok(completedTasks);
+    }
+
 }
