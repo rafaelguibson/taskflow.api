@@ -69,6 +69,9 @@ public class TaskController : ControllerBase
         {
             if (taskItem.Id == id)
             {
+                if (string.IsNullOrWhiteSpace(taskItem.Title))
+                    return BadRequest("O título não pode estar vázio ou só conter espaços em branco");
+                
                 taskItem.Title = task.Title;
                 taskItem.Description = task.Description;
                 taskItem.Completed = task.Completed;
@@ -87,7 +90,6 @@ public class TaskController : ControllerBase
             return NotFound();
 
         Tasks.Remove(taskToDelete);
-        NextId--;
         return Ok(taskToDelete);
     }
     
