@@ -85,6 +85,7 @@ public class TaskController : ControllerBase
             return NotFound();
 
         Tasks.Remove(taskToDelete);
+        NextId--;
         return Ok(taskToDelete);
     }
     
