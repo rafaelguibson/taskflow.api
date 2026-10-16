@@ -12,9 +12,26 @@ public class TaskController : ControllerBase
     private static int NextId = 1;
 
     [HttpGet]
-    public IActionResult GetAll()
+    public IActionResult GetAll(
+        [FromQuery] bool? completed = null, 
+        [FromQuery] string? title = null
+        )
     {
-        return Ok(Tasks);
+        IEnumerable<TaskItem> filteredTasks = Tasks;
+
+        if (completed.HasValue)
+        {
+            filteredTasks = filteredTasks
+                .Where(t => t.Completed == completed.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(title))
+        {
+            filteredTasks = filteredTasks
+                .Where(t => t.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
+        }
+        
+        return Ok(filteredTasks);
     }
 
     [HttpGet("{id}")]
@@ -31,6 +48,7 @@ public class TaskController : ControllerBase
     [HttpPost]
     public IActionResult Create(TaskItem task)
     {
+        
         task.Id = NextId++;
         
         Tasks.Add(task);
@@ -69,16 +87,5 @@ public class TaskController : ControllerBase
         Tasks.Remove(taskToDelete);
         return Ok(taskToDelete);
     }
-
-    [HttpGet]
-    public IActionResult GetCompleted([FromQuery] bool? completed = null)
-    {
-        if (completed == null)
-            return Ok(Tasks);
-        
-        var filteredTasks  = Tasks.Where(t => t.Completed == completed.Value);
-
-        return Ok(filteredTasks);
-    }
-
+    
 }
