@@ -70,12 +70,15 @@ public class TaskController : ControllerBase
         return Ok(taskToDelete);
     }
 
-    [HttpGet("Completed")]
-    public IActionResult GetCompleted()
+    [HttpGet]
+    public IActionResult GetCompleted([FromQuery] bool? completed = null)
     {
-        var completedTasks = Tasks.Where(t => t.Completed);
+        if (completed == null)
+            return Ok(Tasks);
+        
+        var filteredTasks  = Tasks.Where(t => t.Completed == completed.Value);
 
-        return Ok(completedTasks);
+        return Ok(filteredTasks);
     }
 
 }
