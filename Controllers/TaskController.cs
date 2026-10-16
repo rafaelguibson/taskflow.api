@@ -48,6 +48,8 @@ public class TaskController : ControllerBase
     [HttpPost]
     public IActionResult Create(TaskItem task)
     {
+        if (string.IsNullOrWhiteSpace(task.Title) || string.IsNullOrEmpty(task.Title))
+            return BadRequest("O título não pode estar vázio ou só conter espaços em branco");
         
         task.Id = NextId++;
         
