@@ -75,9 +75,6 @@ public class TaskController : ControllerBase
     {
         var completedTasks = Tasks.Where(t => t.Completed);
 
-        if (!completedTasks.Any())
-            return NoContent();
-
         return Ok(completedTasks);
     }
 
