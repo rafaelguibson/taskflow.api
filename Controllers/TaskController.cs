@@ -48,9 +48,6 @@ public class TaskController : ControllerBase
     [HttpPost]
     public IActionResult Create(TaskItem task)
     {
-        if (string.IsNullOrWhiteSpace(task.Title))
-            return BadRequest("O título não pode estar vázio ou só conter espaços em branco");
-        
         task.Id = NextId++;
         
         Tasks.Add(task);
@@ -69,13 +66,10 @@ public class TaskController : ControllerBase
         {
             if (taskItem.Id == id)
             {
-                if (string.IsNullOrWhiteSpace(taskItem.Title))
-                    return BadRequest("O título não pode estar vázio ou só conter espaços em branco");
-                
                 taskItem.Title = task.Title;
                 taskItem.Description = task.Description;
                 taskItem.Completed = task.Completed;
-                return Ok(task);
+                return Ok(taskItem);
             }
         }
         return NotFound();
