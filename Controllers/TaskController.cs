@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TaskFlow.Api.DTOs;
 using TaskFlow.Api.Models;
 
 namespace TaskFlow.Api.Controllers;
@@ -30,8 +31,15 @@ public class TaskController : ControllerBase
             filteredTasks = filteredTasks
                 .Where(t => t.Title.Contains(title, StringComparison.OrdinalIgnoreCase));
         }
-        
-        return Ok(filteredTasks);
+
+        var response = filteredTasks.Select(t => new TaskResponseDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                Completed = t.Completed
+            });
+        return Ok(response);
     }
 
     [HttpGet("{id}")]
@@ -42,37 +50,64 @@ public class TaskController : ControllerBase
         if (task == null)
             return NotFound();
 
-        return Ok(task);
+        var response = new TaskResponseDto
+        {
+            Id = task.Id,
+            Title = task.Title,
+            Description = task.Description,
+            Completed = task.Completed
+        };
+        
+        return Ok(response);
     }
 
     [HttpPost]
-    public IActionResult Create(TaskItem task)
+    public IActionResult Create(CreateTaskDto dto)
     {
-        task.Id = NextId++;
-        
+        var task = new TaskItem()
+        {
+            Id = NextId++,
+            Title = dto.Title,
+            Description = dto.Description,
+            Completed = false
+        };
         Tasks.Add(task);
-
+        var response = new TaskResponseDto
+        {
+            Id = task.Id,
+            Title = task.Title,
+            Description = task.Description,
+            Completed = task.Completed
+        };
+        
         return CreatedAtAction(
             nameof(GetById),
-            new { id = task.Id },
-            task
+            new { id = response.Id },
+            response
         );
     }
 
     [HttpPut("{id}")]
-    public IActionResult Update(int id, TaskItem task)
+    public IActionResult Update(int id, UpdateTaskDto dto)
     {
-        foreach (var taskItem in Tasks )
+        var taskItem = Tasks.FirstOrDefault(t => t.Id == id);
+
+        if (taskItem == null)
+            return NotFound();
+
+        taskItem.Title = dto.Title;
+        taskItem.Description = dto.Description;
+        taskItem.Completed = dto.Completed;
+
+        var response = new TaskResponseDto
         {
-            if (taskItem.Id == id)
-            {
-                taskItem.Title = task.Title;
-                taskItem.Description = task.Description;
-                taskItem.Completed = task.Completed;
-                return Ok(taskItem);
-            }
-        }
-        return NotFound();
+            Id = taskItem.Id,
+            Title = taskItem.Title,
+            Description = taskItem.Description,
+            Completed = taskItem.Completed
+        };
+
+        return Ok(response);
     }
 
     [HttpDelete("{id}")]
@@ -84,7 +119,16 @@ public class TaskController : ControllerBase
             return NotFound();
 
         Tasks.Remove(taskToDelete);
-        return Ok(taskToDelete);
+        
+        var response = new TaskResponseDto
+        {
+            Id = taskToDelete.Id,
+            Title = taskToDelete.Title,
+            Description = taskToDelete.Description,
+            Completed = taskToDelete.Completed
+        };
+        
+        return Ok(response);
     }
     
 }
